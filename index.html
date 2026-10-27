@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" id="meta-description" />
+    <meta property="og:title" content="" id="og-title" />
+    <meta property="og:description" content="" id="og-description" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary" />
+    <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="css/styles.css" />
+    <title>Maedeh Afshar</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main" id="skip-link">Skip</a>
+
+    <header class="site-header" id="site-header">
+      <div class="header-inner">
+        <a class="brand" href="#top" id="brand-link" aria-label="">
+          <svg class="monogram-svg" width="42" height="42" viewBox="0 0 32 32" aria-hidden="true">
+            <rect class="mono-bg" width="32" height="32" rx="7" />
+            <text
+              x="16"
+              y="21.5"
+              text-anchor="middle"
+              dominant-baseline="middle"
+              direction="ltr"
+              unicode-bidi="isolate"
+            >
+              <tspan class="mono-letter-m">M</tspan><tspan class="mono-letter-a" dx="1">A</tspan>
+            </text>
+          </svg>
+          <span class="brand-text">
+            <span class="brand-name" id="brand-name">مائده افشار</span>
+          </span>
+        </a>
+
+        <nav class="nav-desktop" id="nav-desktop" aria-label="Primary"></nav>
+
+        <div class="header-controls">
+          <div class="lang-switch" role="group" aria-label="Language" id="lang-switch">
+            <button type="button" class="lang-btn" data-lang="fa">FA</button>
+            <button type="button" class="lang-btn" data-lang="en">EN</button>
+            <button type="button" class="lang-btn" data-lang="ru">RU</button>
+          </div>
+          <button type="button" class="theme-toggle" id="theme-toggle" aria-label="">
+            <svg class="theme-svg theme-svg-sun" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="4.25" fill="none" stroke="currentColor" stroke-width="1.5" />
+              <g stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+                <path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M4.8 4.8l1.6 1.6M17.6 17.6l1.6 1.6M19.2 4.8l-1.6 1.6M6.4 17.6l-1.6 1.6" />
+              </g>
+            </svg>
+            <svg class="theme-svg theme-svg-moon" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M20 14.5a7.5 7.5 0 0 1-9.8-9.8A7.5 7.5 0 1 0 20 14.5z"
+              />
+            </svg>
+          </button>
+          <button
+            type="button"
+            class="menu-toggle"
+            id="menu-toggle"
+            aria-expanded="false"
+            aria-controls="mobile-nav"
+          >
+            <span class="menu-bar"></span>
+            <span class="menu-bar"></span>
+            <span class="menu-bar"></span>
+            <span class="visually-hidden" id="menu-toggle-label">Menu</span>
+          </button>
+        </div>
+      </div>
+
+      <nav class="nav-mobile" id="mobile-nav" aria-label="Mobile" hidden></nav>
+    </header>
+
+    <main id="main">
+      <section class="hero section" id="top" aria-labelledby="hero-title">
+        <div class="hero-grid">
+          <div class="hero-content hero-animate">
+            <p class="eyebrow" id="hero-role"></p>
+            <h1 class="hero-title" id="hero-title"></h1>
+            <p class="hero-tagline" id="hero-tagline"></p>
+            <p class="hero-intro" id="hero-intro"></p>
+            <a class="btn btn-primary" href="#journey" id="hero-cta"></a>
+          </div>
+          <div class="hero-visual hero-animate">
+            <div class="portrait-frame" id="portrait-frame">
+              <img
+                class="portrait-img"
+                id="portrait-img"
+                alt=""
+                width="480"
+                height="600"
+                decoding="async"
+              />
+              <div class="portrait-placeholder" id="portrait-placeholder">
+                <div class="placeholder-art" aria-hidden="true"></div>
+                <p class="placeholder-text" id="portrait-placeholder-text"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="hero-decor" aria-hidden="true"></div>
+      </section>
+
+      <section class="section about" id="about" aria-labelledby="about-title">
+        <div class="container">
+          <header class="section-header reveal">
+            <p class="eyebrow" id="about-label"></p>
+            <h2 class="section-title" id="about-title"></h2>
+          </header>
+          <div class="about-body reveal" id="about-body"></div>
+        </div>
+      </section>
+
+      <section class="section journey" id="journey" aria-labelledby="journey-title">
+        <div class="container">
+          <div class="journey-layout">
+            <header class="section-header journey-header reveal">
+              <p class="eyebrow" id="journey-label"></p>
+              <h2 class="section-title" id="journey-title"></h2>
+              <p class="section-intro" id="journey-intro"></p>
+            </header>
+            <div class="journey-rows" id="journey-rows"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section experience" id="experience" aria-labelledby="experience-title">
+        <div class="container">
+          <header class="section-header reveal">
+            <p class="eyebrow" id="experience-label"></p>
+            <h2 class="section-title" id="experience-title"></h2>
+          </header>
+          <div class="experience-grid" id="experience-grid"></div>
+        </div>
+      </section>
+
+      <section class="section teaching" id="teaching" aria-labelledby="teaching-title">
+        <div class="container narrow">
+          <header class="section-header reveal">
+            <p class="eyebrow" id="teaching-label"></p>
+            <h2 class="section-title" id="teaching-title"></h2>
+          </header>
+          <div class="teaching-body reveal" id="teaching-body"></div>
+        </div>
+      </section>
+
+      <section class="section courses" id="courses" aria-labelledby="courses-title">
+        <div class="container">
+          <header class="section-header reveal">
+            <p class="eyebrow" id="courses-label"></p>
+            <h2 class="section-title" id="courses-title"></h2>
+            <p class="section-intro" id="courses-intro"></p>
+          </header>
+          <div class="courses-grid" id="courses-grid"></div>
+        </div>
+      </section>
+
+      <section class="section faq" id="faq" aria-labelledby="faq-title">
+        <div class="container narrow">
+          <header class="section-header reveal">
+            <p class="eyebrow" id="faq-label"></p>
+            <h2 class="section-title" id="faq-title"></h2>
+          </header>
+          <div class="faq-list" id="faq-list"></div>
+        </div>
+      </section>
+
+      <section class="section contact" id="contact" aria-labelledby="contact-title">
+        <div class="container">
+          <header class="section-header contact-header reveal">
+            <p class="eyebrow" id="contact-label"></p>
+            <h2 class="section-title" id="contact-title"></h2>
+            <p class="section-intro" id="contact-intro"></p>
+            <div class="contact-logos" id="contact-cards"></div>
+          </header>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer" id="site-footer">
+      <div class="container footer-grid">
+        <div class="footer-brand">
+          <svg class="monogram-svg footer-mono" width="36" height="36" viewBox="0 0 32 32" aria-hidden="true">
+            <rect class="mono-bg" width="32" height="32" rx="7" />
+            <text
+              x="16"
+              y="21.5"
+              text-anchor="middle"
+              dominant-baseline="middle"
+              direction="ltr"
+              unicode-bidi="isolate"
+            >
+              <tspan class="mono-letter-m">M</tspan><tspan class="mono-letter-a" dx="1">A</tspan>
+            </text>
+          </svg>
+          <p class="footer-name" id="footer-name">مائده افشار</p>
+          <p class="footer-role" id="footer-role"></p>
+        </div>
+        <nav class="footer-nav" aria-labelledby="footer-nav-title">
+          <p class="footer-heading" id="footer-nav-title"></p>
+          <ul id="footer-links"></ul>
+        </nav>
+        <div class="footer-contact" aria-labelledby="footer-contact-title">
+          <p class="footer-heading" id="footer-contact-title"></p>
+          <ul id="footer-contact-links"></ul>
+        </div>
+      </div>
+      <p class="footer-copy" id="footer-copy"></p>
+    </footer>
+
+    <script src="js/content.js" defer></script>
+    <script src="js/main.js" defer></script>
+  </body>
+</html>
