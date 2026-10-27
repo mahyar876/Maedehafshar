@@ -18,8 +18,9 @@ Maedeh/
 │   └── main.js             # زبان، تم، منو، انیمیشن، رندر بخش‌ها
 ├── assets/
 │   ├── icons/
-│   │   └── favicon.svg     # فاویکون مونوگرام MA
-│   └── images/             # عکس‌های شما (پایین توضیح داده شده)
+│   │   └── favicon.svg     # فاویکون
+│   └── images/
+│       └── maedeh-portrait.jpg
 └── README.md
 ```
 
@@ -46,7 +47,7 @@ Maedeh/
 
 بخش‌ها: `meta`, `nav`, `hero`, `about`, `journey`, `experience`, `teaching`, `courses`, `faq`, `contact`, `footer`, `ui`.
 
-**نام برند** `Maedeh Afshar` و مونوگرام **MA** در `SITE.brand` ثابت می‌مانند.
+**نام برند** در `SITE.brand.name` و `nameLocalized` (فارسی/انگلیسی/روسی) تنظیم می‌شود.
 
 ---
 
@@ -57,12 +58,10 @@ Maedeh/
 | فایل روی دیسک | کلید در content.js |
 |---------------|-------------------|
 | `assets/images/maedeh-portrait.jpg` | `portrait` |
-| `assets/images/russia-journey-1.jpg` | `journey[0]` |
-| `assets/images/russia-journey-2.jpg` | `journey[1]` |
 
-فقط فایل را در مسیر قرار دهید (یا مسیر را در `SITE.images` عوض کنید). اگر فایل نباشد، **Placeholder** ترجمه‌شده نمایش داده می‌شود.
+فایل را در همان مسیر قرار دهید یا مقدار `SITE.images.portrait` را عوض کنید. اگر فایل نباشد، **Placeholder** ترجمه‌شده نمایش داده می‌شود.
 
-**پیشنهاد:** پرتره حدود ۴:۵ (مثلاً 960×1200)، تصاویر مسیر سفر ۱۶:۱۰.
+**پیشنهاد:** پرتره حدود ۴:۵ (مثلاً 960×1200).
 
 ---
 
@@ -114,6 +113,7 @@ contact: {
 | EN / RU | تمام متن‌ها عوض شود، FA/EN → LTR، FA → RTL |
 | تم | دکمه خورشید/ماه در هدر؛ انتخاب در `localStorage` (`maedeh_theme`) |
 | زبان | `localStorage` کلید `maedeh_lang` |
+| موبایل | DevTools → Toggle device toolbar یا عرض پنجره را کم کنید |
 
 DevTools → Rendering → **Emulate prefers-reduced-motion** برای بررسی کاهش انیمیشن.
 

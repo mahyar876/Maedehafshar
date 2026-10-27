@@ -1,15 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
-  <rect width="32" height="32" rx="7" fill="#1A1816"/>
+  <rect width="32" height="32" rx="8" fill="#1A1816"/>
   <text
     x="16"
-    y="21.5"
+    y="22"
     text-anchor="middle"
-    dominant-baseline="middle"
-    direction="ltr"
     font-family="Georgia, 'Times New Roman', serif"
-    font-size="15"
+    font-size="17"
     font-weight="600"
-  >
-    <tspan fill="#F5F2ED">M</tspan><tspan fill="#B8956A" dx="1">A</tspan>
-  </text>
+    fill="#C9A962"
+  >M</text>
 </svg>

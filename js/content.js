@@ -4,7 +4,7 @@
  * =============================================================================
  *
  * HOW TO EDIT:
- * - Brand name stays "Maedeh Afshar" / monogram "MA" (not translated).
+ * - Brand name stays "Maedeh Afshar" (localized display name in SITE.brand.nameLocalized).
  * - All user-facing copy lives under CONTENT.fa, CONTENT.en, CONTENT.ru.
  *
  * ADD A COURSE CARD:
@@ -16,9 +16,6 @@
  *
  * CHANGE PORTRAIT:
  * - Update SITE.images.portrait path below (default: assets/images/maedeh-portrait.jpg).
- *
- * JOURNEY PHOTO CROP:
- * - SITE.images.journey[] — each item: src, aspectRatio, objectPosition (e.g. "50% 100%").
  *
  * CONTACT LINKS (independent block — fill when ready):
  * - SITE.contact.email    → enables mailto: button
@@ -39,26 +36,10 @@ const SITE = {
       en: "Maedeh Afshar",
       ru: "Maedeh Afshar",
     },
-    monogram: "MA",
   },
   images: {
     // Hero: پرتره حرفه‌ای (لبخند، نور یکنواخت)
     portrait: "assets/images/maedeh-portrait.jpg",
-    // گالری «مسیر من» — فقط دو عکس روسیه (برش: objectPosition)
-    journey: [
-      {
-        id: "moscow-bridge",
-        src: "assets/images/russia-journey-2.jpg",
-        aspectRatio: "5 / 6",
-        objectPosition: "50% 30%",
-      },
-      {
-        id: "red-square",
-        src: "assets/images/russia-journey-1.jpg",
-        aspectRatio: "5 / 6",
-        objectPosition: "50% 88%",
-      },
-    ],
   },
   contact: {
     email: "",
@@ -85,8 +66,6 @@ const CONTENT = {
       courses: "کلاس‌ها",
       faq: "پرسش‌ها",
       contact: "تماس",
-      menuOpen: "باز کردن منو",
-      menuClose: "بستن منو",
       skipToContent: "رفتن به محتوای اصلی",
     },
     hero: {
@@ -280,7 +259,6 @@ const CONTENT = {
       instagram: "اینستاگرام",
       telegram: "تلگرام",
       unavailable: "به‌زودی فعال می‌شود",
-      unavailableHint: "اطلاعات تماس در فایل js/content.js تنظیم می‌شود.",
     },
     footer: {
       tagline: "مدرس زبان انگلیسی",
@@ -296,9 +274,7 @@ const CONTENT = {
       langRu: "Русский",
       portraitAlt: "پرتره مائده افشار، مدرس زبان انگلیسی",
       portraitPlaceholder: "جایگاه عکس پرتره",
-      journeyImageAlt: "مائده افشار در مسیر تحصیل و زندگی در روسیه",
       logoAria: "مائده افشار — بازگشت به ابتدای صفحه",
-      scrollTop: "بازگشت به بالا",
       langGroup: "انتخاب زبان",
     },
   },
@@ -317,8 +293,6 @@ const CONTENT = {
       courses: "Classes",
       faq: "FAQ",
       contact: "Contact",
-      menuOpen: "Open menu",
-      menuClose: "Close menu",
       skipToContent: "Skip to main content",
     },
     hero: {
@@ -513,7 +487,6 @@ const CONTENT = {
       instagram: "Instagram",
       telegram: "Telegram",
       unavailable: "Coming soon",
-      unavailableHint: "Set contact details in js/content.js.",
     },
     footer: {
       tagline: "English Language Teacher",
@@ -529,9 +502,7 @@ const CONTENT = {
       langRu: "Русский",
       portraitAlt: "Portrait of Maedeh Afshar, English language teacher",
       portraitPlaceholder: "Portrait photo placeholder",
-      journeyImageAlt: "Maedeh Afshar during her study and life in Russia",
       logoAria: "Maedeh Afshar — back to top",
-      scrollTop: "Back to top",
       langGroup: "Language selection",
     },
   },
@@ -550,8 +521,6 @@ const CONTENT = {
       courses: "Занятия",
       faq: "Вопросы",
       contact: "Контакты",
-      menuOpen: "Открыть меню",
-      menuClose: "Закрыть меню",
       skipToContent: "Перейти к содержанию",
     },
     hero: {
@@ -746,7 +715,6 @@ const CONTENT = {
       instagram: "Instagram",
       telegram: "Telegram",
       unavailable: "Скоро будет доступно",
-      unavailableHint: "Данные задаются в js/content.js.",
     },
     footer: {
       tagline: "Преподаватель английского языка",
@@ -762,9 +730,7 @@ const CONTENT = {
       langRu: "Русский",
       portraitAlt: "Портрет Maedeh Afshar",
       portraitPlaceholder: "Место для портрета",
-      journeyImageAlt: "Maedeh Afshar — учёба и жизнь в России",
       logoAria: "Maedeh Afshar — наверх",
-      scrollTop: "Наверх",
       langGroup: "Выбор языка",
     },
   },

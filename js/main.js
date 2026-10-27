@@ -18,7 +18,6 @@
   let currentLang = DEFAULT_LANG;
   let scrollObserver = null;
   let headerScrollBound = false;
-
   function safeStorageGet(key) {
     try {
       return localStorage.getItem(key);
@@ -63,29 +62,6 @@
       .replace(/"/g, "&quot;");
   }
 
-  function buildNavLink(sectionId, label) {
-    const a = document.createElement("a");
-    a.href = `#${sectionId}`;
-    a.textContent = label;
-    a.dataset.section = sectionId;
-    return a;
-  }
-
-  function renderNavigation(c) {
-    const desktop = document.getElementById("nav-desktop");
-    const mobile = document.getElementById("mobile-nav");
-    if (!desktop || !mobile) return;
-
-    desktop.replaceChildren();
-    mobile.replaceChildren();
-
-    NAV_SECTIONS.forEach(({ id, key }) => {
-      const label = c.nav[key];
-      desktop.appendChild(buildNavLink(id, label));
-      mobile.appendChild(buildNavLink(id, label));
-    });
-  }
-
   function renderHero(c) {
     text(document.getElementById("hero-role"), c.hero.role);
     text(document.getElementById("hero-title"), getDisplayName());
@@ -100,81 +76,69 @@
     }
   }
 
-  function renderAbout(c) {
-    text(document.getElementById("about-label"), c.about.label);
-    text(document.getElementById("about-title"), c.about.title);
-    const body = document.getElementById("about-body");
-    if (!body) return;
-    body.replaceChildren();
-    c.about.body.forEach((paragraph) => {
+  function fillParagraphs(container, paragraphs) {
+    if (!container) return;
+    container.replaceChildren();
+    paragraphs.forEach((paragraph) => {
       const p = document.createElement("p");
       p.textContent = paragraph;
-      body.appendChild(p);
+      container.appendChild(p);
     });
   }
 
-  function createTimelineItem(item, index) {
+  function renderAbout(c) {
+    text(document.getElementById("about-label"), c.about.label);
+    text(document.getElementById("about-title"), c.about.title);
+    fillParagraphs(document.getElementById("about-body"), c.about.body);
+  }
+
+  function createJourneyStep(item, index) {
     const li = document.createElement("li");
-    li.className = "timeline-item";
-    li.innerHTML = `
-      <span class="timeline-index" aria-hidden="true">${String(index + 1).padStart(2, "0")}</span>
-      <div class="timeline-content">
-        <h3 class="timeline-title">${escapeHtml(item.title)}</h3>
-        <p class="timeline-text">${escapeHtml(item.text)}</p>
-      </div>
-    `;
-    return li;
-  }
+    li.className = "journey-step";
 
-  function normalizeJourneyImage(item) {
-    if (typeof item === "string") {
-      return {
-        id: "",
-        src: item,
-        aspectRatio: "4 / 5",
-        objectPosition: "50% 50%",
-      };
-    }
-    return {
-      id: item.id || "",
-      src: item.src || "",
-      aspectRatio: item.aspectRatio || "4 / 5",
-      objectPosition: item.objectPosition || "50% 50%",
-    };
-  }
+    const article = document.createElement("article");
+    article.className = "journey-step-card reveal";
+    article.style.setProperty("--reveal-delay", `${index * 0.07}s`);
 
-  function createJourneyImageSlot(config, alt, placeholderText) {
-    const figure = document.createElement("figure");
-    figure.className = "journey-figure reveal";
-    if (config.id) figure.classList.add(`journey-figure--${config.id}`);
+    const details = document.createElement("details");
+    details.className = "journey-step-details";
+
+    const summary = document.createElement("summary");
+    summary.className = "journey-step-summary";
+
+    const num = document.createElement("span");
+    num.className = "journey-step-num";
+    num.setAttribute("aria-hidden", "true");
+    num.textContent = String(index + 1).padStart(2, "0");
+
+    const title = document.createElement("span");
+    title.className = "journey-step-title";
+    title.textContent = item.title;
+
+    const toggle = document.createElement("span");
+    toggle.className = "journey-step-toggle accordion-toggle";
+    toggle.setAttribute("aria-hidden", "true");
+
+    summary.append(num, title, toggle);
 
     const wrap = document.createElement("div");
-    wrap.className = "journey-image-wrap";
-    wrap.style.setProperty("--journey-aspect", config.aspectRatio);
-    wrap.style.aspectRatio = config.aspectRatio;
+    wrap.className = "journey-step-body-wrap accordion-panel-wrap";
 
-    const img = document.createElement("img");
-    img.className = "journey-img";
-    img.alt = alt;
-    img.loading = "lazy";
-    img.width = 480;
-    img.height = 600;
-    img.decoding = "async";
-    img.style.objectPosition = config.objectPosition;
+    const inner = document.createElement("div");
+    inner.className = "journey-step-body-inner accordion-panel-inner";
 
-    const ph = document.createElement("div");
-    ph.className = "journey-placeholder";
-    ph.hidden = true;
-    ph.innerHTML = `<div class="placeholder-art journey-art" aria-hidden="true"></div>
-      <p class="placeholder-text">${escapeHtml(placeholderText)}</p>`;
+    const body = document.createElement("div");
+    body.className = "journey-step-body accordion-panel";
+    const paragraph = document.createElement("p");
+    paragraph.textContent = item.text;
+    body.appendChild(paragraph);
 
-    wrap.appendChild(img);
-    wrap.appendChild(ph);
-    figure.appendChild(wrap);
-
-    bindImageFallback(img, ph, config.src);
-
-    return figure;
+    inner.appendChild(body);
+    wrap.appendChild(inner);
+    details.append(summary, wrap);
+    article.appendChild(details);
+    li.appendChild(article);
+    return li;
   }
 
   function bindImageFallback(img, placeholderEl, src) {
@@ -213,47 +177,15 @@
     if (!rowsEl) return;
     rowsEl.replaceChildren();
 
-    const images = SITE.images.journey || [];
     const timeline = c.journey.timeline || [];
-    const rowCount = Math.max(
-      images.length,
-      Math.ceil(timeline.length / 2),
-      1
-    );
+    const list = document.createElement("ol");
+    list.className = "journey-path reveal";
 
-    for (let rowIndex = 0; rowIndex < rowCount; rowIndex += 1) {
-      const row = document.createElement("div");
-      row.className = "journey-row reveal";
-      row.style.setProperty("--reveal-delay", `${rowIndex * 0.1}s`);
+    timeline.forEach((item, index) => {
+      list.appendChild(createJourneyStep(item, index));
+    });
 
-      const textCol = document.createElement("div");
-      textCol.className = "journey-row-text";
-      const segment = document.createElement("ol");
-      segment.className = "timeline timeline-segment";
-      timeline
-        .slice(rowIndex * 2, rowIndex * 2 + 2)
-        .forEach((item, offset) => {
-          segment.appendChild(createTimelineItem(item, rowIndex * 2 + offset));
-        });
-      textCol.appendChild(segment);
-
-      const mediaCol = document.createElement("div");
-      mediaCol.className = "journey-row-media";
-      if (images[rowIndex]) {
-        const config = normalizeJourneyImage(images[rowIndex]);
-        mediaCol.appendChild(
-          createJourneyImageSlot(
-            config,
-            c.ui.journeyImageAlt,
-            c.journey.imagePlaceholder
-          )
-        );
-      }
-
-      row.appendChild(textCol);
-      row.appendChild(mediaCol);
-      rowsEl.appendChild(row);
-    }
+    rowsEl.appendChild(list);
   }
 
   function renderExperience(c) {
@@ -277,14 +209,7 @@
   function renderTeaching(c) {
     text(document.getElementById("teaching-label"), c.teaching.label);
     text(document.getElementById("teaching-title"), c.teaching.title);
-    const body = document.getElementById("teaching-body");
-    if (!body) return;
-    body.replaceChildren();
-    c.teaching.body.forEach((paragraph) => {
-      const p = document.createElement("p");
-      p.textContent = paragraph;
-      body.appendChild(p);
-    });
+    fillParagraphs(document.getElementById("teaching-body"), c.teaching.body);
   }
 
   function renderCourses(c) {
@@ -321,19 +246,23 @@
       details.style.setProperty("--reveal-delay", `${index * 0.04}s`);
       details.innerHTML = `
         <summary class="faq-question">
-          <span>${escapeHtml(item.question)}</span>
-          <span class="faq-icon" aria-hidden="true"></span>
+          <span class="faq-question-text">${escapeHtml(item.question)}</span>
+          <span class="faq-icon accordion-toggle" aria-hidden="true"></span>
         </summary>
-        <div class="faq-answer"><p>${escapeHtml(item.answer)}</p></div>
+        <div class="faq-answer-wrap accordion-panel-wrap">
+          <div class="faq-answer-inner accordion-panel-inner">
+            <div class="faq-answer accordion-panel"><p>${escapeHtml(item.answer)}</p></div>
+          </div>
+        </div>
       `;
       list.appendChild(details);
     });
   }
 
   const CONTACT_ICON_SVG = {
-    telegram: `<svg class="contact-icon-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="#26A5E4" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>`,
-    instagram: `<svg class="contact-icon-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><defs><linearGradient id="contact-ig-grad" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#FD5949"/><stop offset="50%" stop-color="#D6249F"/><stop offset="100%" stop-color="#285AEB"/></linearGradient></defs><path fill="url(#contact-ig-grad)" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.226-.149-4.771-1.664-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>`,
-    email: `<svg class="contact-icon-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="#EA4335" d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z"/></svg>`,
+    telegram: `<svg class="contact-icon-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M11.944 2.667A9.333 9.333 0 1 0 21.28 12a9.333 9.333 0 0 0-9.336-9.333Zm4.62 6.48-1.58 7.45c-.12.54-.44.67-.89.42l-2.46-1.81-1.19 1.15c-.13.13-.24.24-.49.24l.18-2.52 4.57-4.13c.2-.18-.04-.28-.31-.1l-5.65 3.56-2.43-.76c-.53-.16-.54-.53.11-.79l9.52-3.67c.44-.16.82.1.68.79Z"/></svg>`,
+    instagram: `<svg class="contact-icon-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 7.2a4.8 4.8 0 1 0 0 9.6 4.8 4.8 0 0 0 0-9.6Zm0 7.92a3.12 3.12 0 1 1 0-6.24 3.12 3.12 0 0 1 0 6.24Zm5.04-8.16a1.12 1.12 0 1 1-2.24 0 1.12 1.12 0 0 1 2.24 0ZM12 2.88c-2.64 0-2.96.01-4 .05-1.04.05-1.75.21-2.37.45-.64.25-1.19.58-1.73 1.12-.54.54-.87 1.09-1.12 1.73-.24.62-.4 1.33-.45 2.37-.04 1.04-.05 1.36-.05 4s.01 2.96.05 4c.05 1.04.21 1.75.45 2.37.25.64.58 1.19 1.12 1.73.54.54 1.09.87 1.73 1.12.62.24 1.33.4 2.37.45 1.04.04 1.36.05 4 .05s2.96-.01 4-.05c1.04-.05 1.75-.21 2.37-.45.64-.25 1.19-.58 1.73-1.12.54-.54.87-1.09 1.12-1.73.24-.62.4-1.33.45-2.37.04-1.04.05-1.36.05-4s-.01-2.96-.05-4c-.05-1.04-.21-1.75-.45-2.37-.25-.64-.58-1.19-1.12-1.73-.54-.54-1.09-.87-1.73-1.12-.62-.24-1.33-.4-2.37-.45-1.04-.04-1.36-.05-4-.05Zm0 1.92c2.6 0 2.91.01 3.94.05 1.01.05 1.56.22 1.92.37.48.19.82.41 1.18.77.36.36.58.7.77 1.18.15.36.32.91.37 1.92.04 1.03.05 1.34.05 3.94s-.01 2.91-.05 3.94c-.05 1.01-.22 1.56-.37 1.92-.19.48-.41.82-.77 1.18-.36.36-.7.58-1.18.77-.36.15-.91.32-1.92.37-1.03.04-1.34.05-3.94.05s-2.91-.01-3.94-.05c-1.01-.05-1.56-.22-1.92-.37-.48-.19-.82-.41-1.18-.77-.36-.36-.58-.7-.77-1.18-.15-.36-.32-.91-.37-1.92-.04-1.03-.05-1.34-.05-3.94s.01-2.91.05-3.94c.05-1.01.22-1.56.37-1.92.19-.48.41-.82.77-1.18.36-.36.7-.58 1.18-.77.36-.15.91-.32 1.92-.37 1.03-.04 1.34-.05 3.94-.05Z"/></svg>`,
+    email: `<svg class="contact-icon-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Zm0 2v.01L12 13l8-6.99V6H4Zm16 12V9.25l-7.4 6.48a1 1 0 0 1-1.2 0L4 9.25V18h16Z"/></svg>`,
   };
 
   function getContactChannels(c) {
@@ -486,19 +415,6 @@
     const brand = document.getElementById("brand-link");
     if (brand) brand.setAttribute("aria-label", c.ui.logoAria);
 
-    const menuLabel = document.getElementById("menu-toggle-label");
-    const menuBtn = document.getElementById("menu-toggle");
-    const mobileOpen = menuBtn && menuBtn.getAttribute("aria-expanded") === "true";
-    if (menuLabel) {
-      menuLabel.textContent = mobileOpen ? c.nav.menuClose : c.nav.menuOpen;
-    }
-    if (menuBtn) {
-      menuBtn.setAttribute(
-        "aria-label",
-        mobileOpen ? c.nav.menuClose : c.nav.menuOpen
-      );
-    }
-
     updateThemeToggleLabel(c);
     updateLangButtons();
     setupPortrait(c);
@@ -553,7 +469,6 @@
     const c = getContent();
     setDocumentDirection(currentLang);
     updateMeta(c);
-    renderNavigation(c);
     renderHero(c);
     renderAbout(c);
     renderJourney(c);
@@ -598,33 +513,6 @@
     }
   }
 
-  function closeMobileNav() {
-    const nav = document.getElementById("mobile-nav");
-    const toggle = document.getElementById("menu-toggle");
-    if (!nav || !toggle) return;
-    nav.hidden = true;
-    toggle.setAttribute("aria-expanded", "false");
-    document.body.classList.remove("menu-open");
-    updateUiChrome(getContent());
-  }
-
-  function openMobileNav() {
-    const nav = document.getElementById("mobile-nav");
-    const toggle = document.getElementById("menu-toggle");
-    if (!nav || !toggle) return;
-    nav.hidden = false;
-    toggle.setAttribute("aria-expanded", "true");
-    document.body.classList.add("menu-open");
-    updateUiChrome(getContent());
-  }
-
-  function toggleMobileNav() {
-    const toggle = document.getElementById("menu-toggle");
-    if (!toggle) return;
-    if (toggle.getAttribute("aria-expanded") === "true") closeMobileNav();
-    else openMobileNav();
-  }
-
   function onHeaderScroll() {
     const header = document.getElementById("site-header");
     if (!header) return;
@@ -647,7 +535,6 @@
       const target = document.getElementById(id);
       if (!target) return;
       e.preventDefault();
-      closeMobileNav();
       const header = document.getElementById("site-header");
       const offset = header ? header.offsetHeight + 8 : 0;
       const top =
@@ -705,6 +592,63 @@
     });
   }
 
+  function closeAnimatedDetails(details) {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) {
+      details.open = false;
+      return;
+    }
+
+    if (details.classList.contains("is-closing")) return;
+    details.classList.add("is-closing");
+
+    const wrap = details.querySelector(".accordion-panel-wrap");
+    if (!wrap) {
+      details.open = false;
+      details.classList.remove("is-closing");
+      return;
+    }
+
+    const finish = () => {
+      details.open = false;
+      details.classList.remove("is-closing");
+    };
+
+    wrap.addEventListener(
+      "transitionend",
+      (event) => {
+        if (event.target === wrap) finish();
+      },
+      { once: true }
+    );
+
+    window.setTimeout(finish, 520);
+  }
+
+  function initAccordionMotion() {
+    const configs = [
+      { rootId: "journey-rows", summary: ".journey-step-summary" },
+      { rootId: "faq-list", summary: ".faq-question" },
+    ];
+
+    configs.forEach(({ rootId, summary }) => {
+      const root = document.getElementById(rootId);
+      if (!root || root.dataset.accordionMotionBound === "1") return;
+      root.dataset.accordionMotionBound = "1";
+
+      root.addEventListener("click", (event) => {
+        const summaryEl = event.target.closest(summary);
+        if (!summaryEl || !root.contains(summaryEl)) return;
+
+        const details = summaryEl.closest("details");
+        if (!details || !details.open || details.classList.contains("is-closing")) return;
+
+        event.preventDefault();
+        closeAnimatedDetails(details);
+      });
+    });
+  }
+
   function bindEvents() {
     document.getElementById("theme-toggle")?.addEventListener("click", toggleTheme);
 
@@ -714,14 +658,9 @@
       });
     });
 
-    document.getElementById("menu-toggle")?.addEventListener("click", toggleMobileNav);
-
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") closeMobileNav();
-    });
-
     bindSmoothScroll();
     bindHeaderScroll();
+    initAccordionMotion();
   }
 
   function init() {
